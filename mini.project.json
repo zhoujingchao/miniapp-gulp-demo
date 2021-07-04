@@ -1,0 +1,5 @@
+{
+  "enableAppxNg": true,
+  "enableNodeModuleBabelTransform": true,
+  "miniprogramRoot": "dist"
+}

@@ -1,0 +1,5 @@
+<view class={{style.main}}>
+  this is a blank page!!
+  <test />
+  <test2 />
+</view>

@@ -1,0 +1,7 @@
+{
+  "titleBarColor": "#118eea",
+  "usingComponents": {
+    "test": "/components/test/index",
+    "test2": "/components/test2/index"
+  }
+}

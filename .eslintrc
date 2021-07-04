@@ -1,0 +1,82 @@
+{
+  "env": {
+    "browser": true,
+    "es6": true,
+    "amd": true,
+    "node": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "prettier",
+    "prettier/@typescript-eslint"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 8,
+    "sourceType": "module"
+  },
+  "plugins": ["@typescript-eslint"],
+  "globals": {
+    "App": true,
+    "Page": true,
+    "Component": true,
+    "getApp": true,
+    "my": true,
+    "getCurrentPages": true
+  },
+  "rules": {
+    // TODO: 先写在这里，有一定长度之后抽离到npm包
+    "indent": [0, 2, { "flatTernaryExpressions": true }], // 目前版本的indent有bug，先禁用
+    "quotes": ["error", "single", { "avoidEscape": true }], // 双引号包裹单引号会被忽略
+    "@typescript-eslint/no-unused-vars": [1, { "argsIgnorePattern": "^_" }], // 以_开头的变量会被忽略
+    "@typescript-eslint/no-empty-function": [0],
+    "linebreak-style": ["error", "unix"],
+    "semi": ["error", "always"],
+    "no-console": [1, { "allow": ["warn", "error", "info"] }],
+    "prefer-const": [1],
+    "camelcase": "off",
+    // The `@typescript-eslint/naming-convention` rule allows `leadingUnderscore` and `trailingUnderscore` settings. However, the existing `no-underscore-dangle` rule already takes care of this.
+    "no-underscore-dangle": ["error"],
+    "@typescript-eslint/naming-convention": [
+      "error",
+      // Allow camelCase variables (23.2), PascalCase variables (23.8), and UPPER_CASE variables (23.10)
+      {
+        "selector": "variable",
+        "format": ["camelCase", "PascalCase", "UPPER_CASE"]
+      },
+      // Allow camelCase functions (23.2), and PascalCase functions (23.8)
+      {
+        "selector": "function",
+        "format": ["camelCase", "PascalCase"]
+      },
+      // Airbnb recommends PascalCase for classes (23.3), and although Airbnb does not make TypeScript recommendations, we are assuming this rule would similarly apply to anything "type like", including interfaces, type aliases, and enums
+      {
+        "selector": "typeLike",
+        "format": ["PascalCase"]
+      }
+    ],
+    "max-lines": ["error", 500], // 最大行数500
+    "max-depth": ["error", 3], // 最大可嵌套深度为3
+    "max-lines-per-function": [
+      "error",
+      { "max": 60, "skipComments": true, "skipBlankLines": true }
+    ], // 最大行60，不含注释 不含空行
+    "max-nested-callbacks": ["error", 5], // 函数嵌套回调深度最多5
+    // 除typeof 与null比较 或比较两个字面量的值意外必须用===, 隐式转换is evil
+    "eqeqeq": ["error", "smart"],
+    // 循环中不应当被await，如需要，考虑Promise.all
+    "no-await-in-loop": ["error"],
+    "no-else-return": "error",
+    // class function 会声明提前，const 不会
+    "no-use-before-define": ["error", { "functions": false, "classes": false }]
+  },
+  "overrides": [
+    {
+      "files": ["*.js"],
+      "rules": {
+        "@typescript-eslint/explicit-module-boundary-types": "off"
+      }
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+<view class={{styles.test}}>
+  Test!
+</view>
+
+<view class={{class}}>
+  Test!
+</view>
