@@ -5,16 +5,22 @@ const less = require('gulp-less');
 const eslint = require('gulp-eslint');
 const gulpWatch = require('gulp-watch');
 const babel = require('gulp-babel');
+const sourcemaps = require('gulp-sourcemaps');
 const del = require('del');
 const gulpRename = require('gulp-rename');
 const through2 = require('through2');
 const postcss = require('gulp-postcss');
 const autoprefixer = require('autoprefixer');
 const modules = require('postcss-modules');
-// const debug = require('gulp-debug');
+const gulpIf = require('gulp-if');
+const uglify = require('gulp-uglify');
+const cleanCSS = require('gulp-clean-css');
 
 const SOURCE = './client/**/*';
 const DESTINATION = './dist/';
+
+const env = process.env.NODE_ENV;
+const isProd = env === 'prod';
 
 /**
  * @description 将需要的文件放入 dist 目录。
@@ -67,6 +73,7 @@ const lessc = () => {
       .pipe(less())
       // 这种方式css modules个人觉得还是不优雅，新增了css.json文件来依托关系。不适应的可以不用，注释这行，直接使用less即可
       .pipe(postcss([modules(), autoprefixer()]))
+      .pipe(gulpIf(isProd, cleanCSS()))
       .pipe(
         gulpRename((path) => {
           path.extname = '.acss';
@@ -93,12 +100,15 @@ const lessc = () => {
 const js = () =>
   src('./client/**/*.{js,ts}')
     .pipe(gulpChanged(DESTINATION))
+    .pipe(gulpIf(!isProd, sourcemaps.init()))
     .pipe(
       babel({
         presets: ['@babel/preset-typescript', '@babel/preset-env'],
         plugins: ['@babel/transform-runtime'],
       })
     )
+    .pipe(gulpIf(!isProd, sourcemaps.write()))
+    .pipe(gulpIf(isProd, uglify()))
     .pipe(dest(DESTINATION));
 
 /**
@@ -121,7 +131,5 @@ exports.dev = series(clean, buildApp, js, watching);
  * 在编译过程中不能cleanBuild会造成支付宝IDE找不到对应的文件，所以cleanBuild放在了开发中。
  * 唯一可能造成的问题是，在watching时删除的一些文件会被带上线（也不会有问题），所以最终发布
  * 前手动执行一次cleanBuild，或者重新执行一次dev即可。
- *
- * TODO：生产环境需要压缩css文件和js文件
  */
 exports.build = series(clean, parallel(lessc, js), buildApp);
